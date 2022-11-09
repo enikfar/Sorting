@@ -1,40 +1,106 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define TRUE 1
-#define FALSE 0
-#define COLS 1048576;
-#define ROWS 1024;
-//folding_case = FALSE;
-void initializer(int *array[])
-{ //initialize the two 2d array to null byte
-    int row, col;
+#include <ctype.h>
 
-    for (row = 0; (row < ROWS); row++)
+// void free_array(int *array[])
+// {
+//     int row, col;
 
+//     for (row = 0; row < ROWS; row++)
+//     {
+//         free(array[row]);
+//     }
+// }
+
+int strcicmp(char const *a, char const *b)
+{
+    for (;; a++, b++)
     {
-
-        // currently has no actual row
-        array[row] = malloc((ROWS + 1) * sizeof(int));
-
-        // Now we can use it
-        for (col = 0; col < (COLS + 1); col++)
-        {
-            array[row][col] = '\0';
-        }
+        int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
+        if (d != 0 || !*a)
+            return d;
     }
+}
+
+int cmp(const void *p, const void *q)
+{
+    char *const *pp = p;
+    char *const *qq = q;
+    return -strcmp(*pp, *qq);
 }
 
 int main(int arg_count, char **arg_values)
 {
-
     for (int i = 0; i < arg_count; i++)
     {
         printf("%d: %s\n", i, arg_values[i]);
     }
-    int ch;
-    int *b[ROWS];
-    initializer(b);
+    char ch;
+    char **strings;
+    strings = malloc(1024 * 1024);
+    int row = 0;
+    while ((ch != EOF))
+    {
+        int col = 0;
+        // strings[row] = malloc(1024);
+        char *word;
+        word = malloc(1024);
 
+        while ((ch = getchar()) != '\n')
+        {
+            if (ch == EOF)
+            {
+                break;
+            }
+            // printf("%d \n", col);
+            word[col] = ch;
+            col++;
+        }
+        // printf("%d\n", row);
+
+        word[col] = '\0';
+
+        strings[row] = word;
+        // printf("\n %s", strings[row - 2]);
+        // printf(" \n here");
+        // printf("\n %s", word);
+        row++;
+        if (ch == EOF)
+        {
+            strings[row] = malloc(1024);
+            strings[row] = '\0';
+        }
+    }
+
+    qsort(strings, (row - 1), 1024, strcmp);
+    int i = 0;
+    // printf("%s", strings);
+    //  printf("%s", strings[3]);
+    for (i; i < row - 1; i++)
+    {
+        printf("\n %s", strings[i]);
+    }
+    // free_array(strings);
     return 0;
+
+    // if (arg_count > 1)
+    // {
+    //     for (int i = 1; i < arg_count; i++)
+    //     {
+    //         if (strcmp(arg_values[i], "-f") == 0)
+    //         {
+
+    //             qsort(strings, (row - 1), 1024, strcicmp);
+    //         }
+    //         if (strcmp(arg_values[i], "-r") == 0)
+    //         {
+    //             qsort(strings, (row - 1), 1024, strcicmp);
+    //         }
+    //         if (strcmp(arg_values[i], "-n") == 0)
+    //         {
+    //             qsort(strings, (row - 1), 1024, numeric_compar);
+    //         }
+    //     }
+    // }
 }
