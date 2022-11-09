@@ -23,11 +23,14 @@ int strcicmp(char const *a, char const *b)
     }
 }
 
-int cmp(const void *p, const void *q)
+int cmp(void *p, void *q)
 {
-    char *const *pp = p;
-    char *const *qq = q;
-    return -strcmp(*pp, *qq);
+    char *pp = *(char **)p;
+    char *qq = *(char **)q;
+    // printf("%s\n", pp);
+    // printf("%s\n", qq);
+
+    return strcmp(pp, qq);
 }
 
 int main(int arg_count, char **arg_values)
@@ -73,10 +76,9 @@ int main(int arg_count, char **arg_values)
         }
     }
 
-    qsort(strings, (row - 1), 1024, strcmp);
+    qsort(strings, (row - 1), sizeof(char *), cmp);
     int i = 0;
-    // printf("%s", strings);
-    //  printf("%s", strings[3]);
+
     for (i; i < row - 1; i++)
     {
         printf("\n %s", strings[i]);
