@@ -27,6 +27,9 @@ int cmp(const void *p, const void *q)
 {
     char *const *pp = p;
     char *const *qq = q;
+
+    // print strings p and q
+    // return strcmp(p,q)
     return -strcmp(*pp, *qq);
 }
 
@@ -45,7 +48,7 @@ int main(int arg_count, char **arg_values)
         int col = 0;
         // strings[row] = malloc(1024);
         char *word;
-        word = malloc(1024);
+        word = malloc(1024 * sizeof(char) + 1);
 
         while ((ch = getchar()) != '\n')
         {
@@ -73,7 +76,7 @@ int main(int arg_count, char **arg_values)
         }
     }
 
-    qsort(strings, (row - 1), 1024, strcmp);
+    qsort(strings, (row - 1), sizeof(char *), strcmp);
     int i = 0;
     // printf("%s", strings);
     //  printf("%s", strings[3]);
