@@ -3,25 +3,34 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-// void free_array(int *array[])
-// {
-//     int row, col;
+void free_array(char **array, int rows)
+{
+    int row, col;
 
-//     for (row = 0; row < ROWS; row++)
-//     {
-//         free(array[row]);
-//     }
-// }
+    for (row = 0; row < rows; row++)
+    {
+        free(array[row]);
+    }
+}
+void print_array(char **array, int length)
+{
+    int row, col;
 
-// int strcicmp(void *a, void *b)
-// {
-//     for (;; a++, b++)
-//     {
-//         int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
-//         if (d != 0 || !*a)
-//             return d;
-//     }
-// }
+    for (row = 0; row < length; row++)
+    {
+        printf("%s \n", array[row]);
+    }
+}
+int strcicmp(void *p, void *q)
+{
+    char *pp = *(char **)p;
+    char *qq = *(char **)q;
+    for (; *pp; ++pp)
+        *pp = tolower(*pp);
+    for (; *qq; ++qq)
+        *qq = tolower(*qq);
+    return strcmp(pp, qq);
+}
 
 int cmp(void *p, void *q)
 {
@@ -36,11 +45,66 @@ int rev_cmp(void *p, void *q)
 {
     char *pp = *(char **)p;
     char *qq = *(char **)q;
-    // printf("%s\n", pp);
-    // printf("%s\n", qq);
-
     return -strcmp(pp, qq);
 }
+long mystrtol(char *start, char **rest)
+{
+    char *p;
+    long result;
+    p = start;
+    int is_neg = 0;
+    long acc = 0;
+    while (isspace(*p))
+    {
+        p += 1;
+        acc++;
+    }
+    if (*p == '-')
+    {
+        is_neg = 1;
+        p += 1;
+        acc++;
+    }
+    if (*p == '+')
+    {
+        p += 1;
+        acc++;
+    }
+
+    while (1)
+    {
+        int digit;
+        if ((*p >= '0') && (*p <= '9'))
+        {
+            digit = (*p - '0');
+            acc++;
+        }
+        else
+        {
+            break;
+        }
+        result = result * 10 + digit;
+    }
+    rest = p;
+
+    return result;
+}
+int num_cmp(void *p, void *q)
+{
+    char *rest;
+    char *rest2;
+    char *pp = *(char **)p;
+    char *qq = *(char **)q;
+    if (((mystrtol(pp, &rest)) - (mystrtol(qq, &rest2))) == 0)
+    {
+        return strcmp(rest, rest2);
+    }
+    else
+    {
+        return ((mystrtol(pp, &rest)) - (mystrtol(qq, &rest2)));
+    }
+}
+
 int main(int arg_count, char **arg_values)
 {
     // for (int i = 0; i < arg_count; i++)
@@ -87,33 +151,38 @@ int main(int arg_count, char **arg_values)
     // qsort(strings, (row - 1), sizeof(char *), cmp);
 
     // free_array(strings);
-    return 0;
 
     if (arg_count > 1)
     {
         for (int i = 1; i < arg_count; i++)
         {
-            // if (strcmp(arg_values[i], "-f") == 0)
-            // {
-
-            //     qsort(strings, (row - 1), sizeof(char *), strcicmp);
-            // }
-            if (strcmp(arg_values[i], "-r") == 0)
+            if (strcmp(arg_values[i], "-f") == 0)
+            {
+                ;
+                qsort(strings, (row - 1), sizeof(char *), strcicmp);
+                print_array(strings, row);
+            }
+            else if (strcmp(arg_values[i], "-r") == 0)
             {
                 qsort(strings, (row - 1), sizeof(char *), rev_cmp);
-                printf("here");
+                print_array(strings, row);
             }
-            // if (strcmp(arg_values[i], "-n") == 0)
-            // {
-            //     qsort(strings, (row - 1), 1024, numeric_compar);
-            // }
+            else if (strcmp(arg_values[i], "-h") == 0)
+            {
+                qsort(strings, (row - 1), sizeof(char *), cmp);
+                print_array(strings, row);
+            }
+            else if (strcmp(arg_values[i], "-n") == 0)
+            {
+                qsort(strings, (row - 1), sizeof(char *), num_cmp);
+                print_array(strings, row);
+            }
+            else
+            {
+                printf("wrong flag");
+            }
         }
     }
-
-    int i = 0;
-
-    for (i; i < row - 1; i++)
-    {
-        printf("\n %s", strings[i]);
-    }
+    free_array(strings, row);
+    return 0;
 }
