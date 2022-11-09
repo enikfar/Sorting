@@ -50,7 +50,7 @@ int rev_cmp(void *p, void *q)
 long mystrtol(char *start, char **rest)
 {
     char *p;
-    long result;
+    long result = 0;
     p = start;
     int is_neg = 0;
     long acc = 0;
@@ -77,6 +77,7 @@ long mystrtol(char *start, char **rest)
         if ((*p >= '0') && (*p <= '9'))
         {
             digit = (*p - '0');
+	    p++;
             acc++;
         }
         else
@@ -85,14 +86,19 @@ long mystrtol(char *start, char **rest)
         }
         result = result * 10 + digit;
     }
-    rest = p;
+    *rest = p;
+    printf("%d\n",result);
+    if(is_neg){
+    return ( (-1) * result);
+    }
+
 
     return result;
 }
 int num_cmp(void *p, void *q)
 {
-    char *rest;
-    char *rest2;
+    char *rest = NULL;
+    char *rest2 = NULL;
     char *pp = *(char **)p;
     char *qq = *(char **)q;
     if (((mystrtol(pp, &rest)) - (mystrtol(qq, &rest2))) == 0)
@@ -111,7 +117,7 @@ int main(int arg_count, char **arg_values)
     // {
     //     printf("%d: %s\n", i, arg_values[i]);
     // }
-    char ch;
+    char ch = getchar();
     char **strings;
     strings = malloc(1024 * 1024);
     int row = 0;
@@ -122,7 +128,7 @@ int main(int arg_count, char **arg_values)
         char *word;
         word = malloc(1024 * sizeof(char) + 1);
 
-        while ((ch = getchar()) != '\n')
+        while (ch != '\n')
         {
             if (ch == EOF)
             {
@@ -130,11 +136,13 @@ int main(int arg_count, char **arg_values)
             }
             // printf("%d \n", col);
             word[col] = ch;
+	    ch = getchar();
             col++;
         }
         // printf("%d\n", row);
 
         word[col] = '\0';
+	ch = getchar();
 
         strings[row] = word;
         // printf("\n %s", strings[row - 2]);
@@ -174,7 +182,7 @@ int main(int arg_count, char **arg_values)
             }
             else if (strcmp(arg_values[i], "-n") == 0)
             {
-                qsort(strings, (row - 1), sizeof(char *), num_cmp);
+                qsort(strings, row , sizeof(char *), num_cmp);
                 print_array(strings, row);
             }
             else

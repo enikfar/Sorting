@@ -1,6 +1,6 @@
-ALICE
-alice
-BOB
-bob
-CAROL
-carol
+45 ALICE
+90 alice
+1 BOB
+   10 bob
+-11 CAROL
+12  carol
